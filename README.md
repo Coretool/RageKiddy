@@ -8,16 +8,16 @@ Chameleon is a bot for metasploit and (b)ettercap. It's currently under heavy de
 ###TODOs
 
 **metasploit**
--Test
--Add _singel_ payloads
+- Test
+- Add _singel_ payloads
 
 **nessus**
--Test
+- Test
 
 **network**
--Add bettercap support
+- Add bettercap support
 
 **cli**
--Finish the menu
+- Finish the menu
 
 
