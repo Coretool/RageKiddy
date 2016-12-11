@@ -4,7 +4,10 @@ All Target related code goes here.
  -> vulnerability handling
  -> exploit addition
 """
-from metasploit.exploits import Exploit
+import sys
+import re
+sys.path.append('./')
+from exploits import Exploit
 
 
 class Target(object):
@@ -28,7 +31,7 @@ class Target(object):
         :return: services on host (name, port and info)
         """
         table = []
-        services = str(client.console_execute('services -c name ' + self.ip, True)[b'data'])
+        services = str(client.console_execute('services -c name {0}\n'.format(self.ip), True)[b'data'])
         services = services.split('\n')
         for service in services:
             service = ' '.join(service.split())
@@ -36,7 +39,7 @@ class Target(object):
             if service[0] == self.ip:
                 table.append({'name': service[1]})
 
-        ports = str(client.console_execute('services -c name,port ' + self.ip, True)[b'data'])
+        ports = str(client.console_execute('services -c name,port {0}\n '.format(self.ip), True)[b'data'])
         ports = ports.split('\n')
         for port in ports:
             for service in table:
@@ -46,7 +49,7 @@ class Target(object):
                     if len(port) == 3:
                         service.port = port[2]
 
-        infos = str(client.console_execute('services -c name,info ' + self.ip, True)[b'data'])
+        infos = str(client.console_execute('services -c name,info {0}\n '.format(self.ip), True)[b'data'])
         infos = infos.split('\n')
         for info in infos:
             for service in table:
@@ -66,15 +69,16 @@ class Target(object):
         """
         res = ''
         for port in self.services:
-            res += str(client.console_execute('vulns -p {0}'.format(port.port))[b'data'])
+            res += str(client.console_execute('vulns -p {0}\n'.format(port.port))[b'data'])
 
         res = res.split('\n')
         for line in res:
             if self.ip in line:
-                parts = line.split(' ')  # Time: 2012-06-15 18:32:26 UTC Vuln: host=172.16.194.134 name=NSS-11011 refs=NSS-11011
-                parts[7] = parts[7].split('=')[1]
-                parts[8] = parts[8].split('=')[1]
-                self.vulns.append({'name': parts[7], 'refs': parts[8]})
+                # Time: 2010-09-28 01:51:38 UTC Vuln: host=192.168.1.161 port=445 proto=tcp name=NSS-10860 refs=CVE-2000-1200,BID-959,OSVDB-714
+                port = re.findall(r'port=[0-9]*', line) 
+                name = re.findall(r'name=[0-9aA-zZ\-]', line)
+                refs = re.findall(r'refs=[0-9aA-zZ\-,]', line)
+                self.vulns.append({'name': name, 'refs': refs, 'port': port})
 
     def resolve_vuln(self, client, vuln):
         """
@@ -90,9 +94,9 @@ class Target(object):
             for ref in refs:
                 if 'cve' in str.lower(ref):  # CVE-2008-0166
                     cve = ref.split('-')[1] + '-' + ref.split('-')[2]
-                    res = str(client.console_execute('search cve:{0}'.format(cve))[b'data'])
+                    res = str(client.console_execute('search cve:{0}\n'.format(cve))[b'data'])
                     res = self.read_search(res)
-                    self.exploits.append(Exploit(res.name, self.os))
+                    self.exploits.append(Exploit(res.name, self.os, vuln.port, self.ip))
 
     def read_search(self, search):
         """
