@@ -1,30 +1,21 @@
-"""
-
-Author: Coretool
-Desc: All (msf)rpc related code goes here.
-Licence: MIT
-
-"""
-
 import http.client
 import ssl
 import msgpack
-import subprocess
 
 class MSFClientError(Exception):
     pass
 
-class MSFClient(object):
 
+class MSFClient(object):
     header = {
-        'Content-Type' : 'binary/message-pack'
+        'Content-Type': 'binary/message-pack'
     }
 
     def __init__(self, password, **kwargs):
-        self.uri  = kwargs.get('uri', '/api/')
+        self.uri = kwargs.get('uri', '/api/')
         self.port = kwargs.get('port', 55553)
         self.host = kwargs.get('host', '127.0.0.1')
-        self.ssl  = kwargs.get('ssl', True)
+        self.ssl = kwargs.get('ssl', True)
         self.verify = kwargs.get('verify', False)
         self.session = kwargs.get('token')
 
@@ -32,7 +23,8 @@ class MSFClient(object):
             if self.verify:
                 self.client = http.client.HTTPSConnection(self.host, self.port)
             else:
-                self.client = http.client.HTTPSConnection(self.host, self.port, context=ssl._create_unverified_context())
+                self.client = http.client.HTTPSConnection(self.host, self.port,
+                                                          context=ssl._create_unverified_context())
 
         else:
             self.client = http.client.HTTPConnection(self.host, self.port)
@@ -62,7 +54,7 @@ class MSFClient(object):
             self.client.request('POST', self.uri, msgpack.packb(data), self.header)
             response = self.client.getresponse()
 
-            if(response.status == 200):
+            if (response.status == 200):
                 result = msgpack.unpackb(response.read())
                 if 'error' in result:
                     raise MSFClientError(result['error_message'])
@@ -102,18 +94,10 @@ class MSFClient(object):
         return self.call('console.list')
 
     def console_execute(self, command: object, ret: object = False, console: object = '0') -> object:
-        if self.call('console.list') == []:
-            self.console_create()
         print(self.call('console.write', console, command))
         response = self.call('console.read', console)
-        if(True == ret):
+        if (True == ret):
             return response
 
-    
-def start_server(username, password, ssl=True, hostname='127.0.0.1', port='55553'):
-    proc = subprocess.Popen(['ruby', 'msfrpcd', '-a', hostname, '-p', port, '-U', username, '-P', password, '-S=', str(ssl)], stdout=subprocess.PIPE)
-    for line in proc.stdout.readlines():
-        if 'error' in line:
-            return False
-        else:
-            return True
+    def console_read(self, console=0):
+        return str(self.call('console.read', console)[b'data'])

@@ -1,10 +1,21 @@
-from uuid import getnode
-import socket
-import re
+import sys
+sys.path.append('./')
+import metasploit
+import nessus
+import random
 
-def get_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(('google.com', 0))
-    return s.getsockname()[0]
+# hook up to cli frontend and config backend
 
-print(get_ip())
+username = ''
+password = ''
+target = ''
+workspace_name = ''
+#TODO add service starters
+
+# metasploit setup
+mclient = metasploit.rpcclient.MSFClient(password, username=username)
+mclient.console_create()
+
+
+
+
