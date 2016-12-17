@@ -1,6 +1,8 @@
 import http.client
-import ssl
 import msgpack
+import ssl
+import sys
+sys.path.append('./')
 
 class MSFClientError(Exception):
     pass
@@ -101,3 +103,4 @@ class MSFClient(object):
 
     def console_read(self, console=0):
         return str(self.call('console.read', console)[b'data'])
+

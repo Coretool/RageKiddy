@@ -1,5 +1,7 @@
+import sys
 from time import sleep
-from . import metasploit
+sys.path.append('./')
+import metasploit
 
 def generate_name(type, nr):
     return 'Chameleon_{0}_{1}'.format(type, nr)

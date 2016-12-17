@@ -1,5 +1,7 @@
+import sys
 from time import sleep
-from . import metasploit
+sys.path.append('./')
+import metasploit
 
 class NexposeClient(object):
     def __init__(self, username, password, host):

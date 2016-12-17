@@ -1,5 +1,7 @@
+import sys
 from time import sleep
-from . import metasploit
+sys.path.append('./')
+import metasploit
 
 # TODO finish, add cleanup
 
@@ -34,5 +36,5 @@ class OpenvasClient(object):
         name = generate_name(index)
         self.client.console_execute('openvas_target_create "{0}" {1} "Chameleon Scan"\n'.format(name, target))
         sleep(3.141) # yes, that's pi
-        self.client.console_execute('openvas_task_create {0} "" {1} {2} {3}\n'.format(name, 3, 1)) # fix: clean db
+        self.client.console_execute('openvas_task_create {0} "" {1} {2} {3}\n'.format(name, 3, 1))  # fix: clean db
         pass
