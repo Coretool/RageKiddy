@@ -6,14 +6,15 @@ from colors import *
 
 LOG_LEVEL = 0  # silent
 
-print('  ___  _   _    __    __  __  ____  __    ____  _____  _  _ ')
-print(' / __)( )_( )  /__\  (  \/  )( ___)(  )  ( ___)(  _  )( \( )')
-print('( (__  ) _ (  /(__)\  )    (  )__)  )(__  )__)  )(_)(  )  ( ')
-print(' \___)(_) (_)(__)(__)(_/\/\_)(____)(____)(____)(_____)(_)\_)')
+print(' ____    __    ___  ____  _  _  ____  ____  ____  _  _ ')
+print('(  _ \  /__\  / __)( ___)( )/ )(_  _)(  _ \(  _ \( \/ )')
+print(' )   / /(__)\( (_-. )__)  )  (  _)(_  )(_) ))(_) )\  / ')
+print('(_)\_)(__)(__)\___/(____)(_)\_)(____)(____/(____/ (__) ')
 print('by coretool')
 print('\n')
 
-print(mrk('Input a target for chameleon. You can select a single ip like 192.168.1.1'))
+
+print(mrk('Input a target for RageKiddy. You can select a single ip like 192.168.1.1'))
 print(mrk('a subnetwork like 192.168.1.1/6 or the complete network (192.168.1.1/255)'))
 target = input('')
 
