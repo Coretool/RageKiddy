@@ -1,17 +1,8 @@
 # clients
 
-All supported clients can be found here.
+Clients are basically the backbones of chameleon since they hook it up to various tools for information gathering and penetration tests.
 
-Each client has at least a `load`, a `connect` and a `scan` function.
+At the moment chameleon has clients for Nessus, Nexpose and OpenVAS.
+Additionally there is a client for MSFDB and a client for the built-in nmap version (db_nmap).
 
-### `load`
-
-This function loads the module into metasploit.
-
-### `connect`
-
-Connect is used to connect metasploit to a module.
-
-### `scan`
-
-Scan performs the default scan. Other scans may be implemented and found by their names.
+A client featuring various `auxilliary` modules is in planning.
